@@ -12,17 +12,7 @@ const PORT = process.env.PORT || 9000;
 
 await connectDB();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(express.json({ limit: "10mb" }));
 
