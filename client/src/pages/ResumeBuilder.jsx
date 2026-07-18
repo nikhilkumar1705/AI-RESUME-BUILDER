@@ -240,29 +240,32 @@ const ResumeBuilder = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
         <LoaderCircle className="h-8 w-8 animate-spin text-green-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-7xl px-4 py-6">
-        <div className="mb-6 flex items-center justify-between gap-4">
+    <div className="min-h-screen overflow-x-hidden bg-slate-50">
+      <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-5 sm:py-6 lg:px-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6 sm:flex-nowrap sm:gap-4">
           <Link
             to="/app"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-green-600"
+            className="inline-flex min-w-0 items-center gap-2 text-xs font-medium text-slate-600 transition hover:text-green-600 sm:text-sm"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
-            Back to dashboard
+            <ArrowLeftIcon className="h-4 w-4 shrink-0" />
+
+            <span className="truncate">
+              Back to dashboard
+            </span>
           </Link>
 
           <button
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="inline-flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-green-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-sm"
           >
             {isSaving ? (
               <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -274,16 +277,18 @@ const ResumeBuilder = () => {
           </button>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <BuilderTabs
-              sections={sections}
-              activeSectionIndex={activeSectionIndex}
-              setActiveSectionIndex={setActiveSectionIndex}
-            />
+        <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-[380px_minmax(0,1fr)] xl:grid-cols-[420px_minmax(0,1fr)]">
+          <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:rounded-2xl sm:p-5">
+            <div className="w-full overflow-x-auto">
+              <BuilderTabs
+                sections={sections}
+                activeSectionIndex={activeSectionIndex}
+                setActiveSectionIndex={setActiveSectionIndex}
+              />
+            </div>
 
             <div className="mt-4">
-              <div className="h-1.5 w-full rounded-full bg-slate-200">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
                   className="h-1.5 rounded-full bg-green-500 transition-all"
                   style={{
@@ -304,7 +309,7 @@ const ResumeBuilder = () => {
               handleNext={handleNext}
             />
 
-            <div className="mt-6">
+            <div className="mt-4 min-w-0 sm:mt-6">
               {activeSection.id === "personal" && (
                 <PersonalnfoForm
                   data={resumeData.personal_info}
@@ -502,11 +507,13 @@ const ResumeBuilder = () => {
             </div>
           </div>
 
-          <ResumePreview
-            resumeData={resumeData}
-            onSave={handleSave}
-            onDownload={handleDownload}
-          />
+          <div className="min-w-0 overflow-x-auto">
+            <ResumePreview
+              resumeData={resumeData}
+              onSave={handleSave}
+              onDownload={handleDownload}
+            />
+          </div>
         </div>
       </div>
     </div>

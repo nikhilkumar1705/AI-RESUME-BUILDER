@@ -148,24 +148,24 @@ const Login = () => {
     };
 
     return (
-        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-green-50 via-white to-slate-50 px-5">
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-green-50 via-white to-slate-50 px-4 py-8 sm:px-5">
             <form
                 onSubmit={handleSubmit}
                 noValidate
-                className="relative z-10 w-full max-w-md rounded-3xl border border-slate-200 bg-white px-8 py-10 text-center shadow-2xl shadow-green-100"
+                className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200 bg-white px-5 py-7 text-center shadow-2xl shadow-green-100 sm:rounded-3xl sm:px-8 sm:py-10"
             >
                 <Link
                     to="/"
                     className="mx-auto mb-5 flex w-fit items-center gap-2"
                     aria-label="Go to homepage"
                 >
-                    <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 shadow-lg shadow-green-500/25">
-                        <FileText className="h-7 w-7 text-white" />
+                    <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500 shadow-lg shadow-green-500/25 sm:h-14 sm:w-14">
+                        <FileText className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                         <Sparkles className="absolute -right-1 -top-1 h-4 w-4 text-green-200" />
                     </div>
                 </Link>
 
-                <h1 className="text-3xl font-bold text-slate-900">
+                <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                     {state === "login" ? "Welcome back" : "Create account"}
                 </h1>
 
@@ -175,7 +175,7 @@ const Login = () => {
                         : "Sign up to create your first AI resume"}
                 </p>
 
-                <div className="mt-8 space-y-4">
+                <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
                     {state === "register" && (
                         <div className="flex h-12 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-5 transition focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
                             <User className="h-4 w-4 text-slate-400" aria-hidden="true" />
@@ -293,7 +293,7 @@ const Login = () => {
                 <div className="absolute bottom-20 left-10 h-72 w-72 rounded-full bg-teal-200/30 blur-3xl" />
             </div>
 
-            <div className="pointer-events-none absolute bottom-8 flex items-center gap-2 text-xs text-slate-500">
+            <div className="pointer-events-none absolute bottom-3 hidden items-center gap-2 text-xs text-slate-500 sm:flex lg:bottom-8">
                 <Sparkles className="h-4 w-4 text-green-500" />
                 AI-powered resume builder
             </div>
