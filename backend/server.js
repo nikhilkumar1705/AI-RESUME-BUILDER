@@ -1,11 +1,16 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-
+import dns from 'dns'
 import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import resumeRouter from "./routes/resumeRoutes.js";
 import aiRouter from "./routes/aiRoutes.js";
+
+dns.setServers([
+  "1.1.1.1",
+  "8.8.8.8",
+]);
 
 const app = express();
 const PORT = process.env.PORT || 9000;
