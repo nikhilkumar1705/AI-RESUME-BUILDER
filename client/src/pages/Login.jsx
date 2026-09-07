@@ -37,7 +37,6 @@ const Login = () => {
     const [formData, setFormData] = useState(INITIAL_FORM);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Keep the URL's "state" param valid (defaults to login)
     useEffect(() => {
         if (urlState !== "login" && urlState !== "register") {
             setSearchParams(
@@ -50,8 +49,8 @@ const Login = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        setFormData((previousData) => ({
-            ...previousData,
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
         }));
     };
@@ -59,18 +58,23 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (isSubmitting) {
-            return;
-        }
+        if (isSubmitting) return;
 
-        // Guard against missing env config in production
         if (!BASE_URL) {
-            toast.error("Server URL is not configured. Please contact support.");
+            toast.error("Server URL is not configured.");
             return;
         }
 
-        const trimmedEmail = formData.email.trim().toLowerCase();
+        const trimmedEmail = formData.email
+            .trim()
+            .toLowerCase();
+
         const trimmedName = formData.name.trim();
+
+        if (!trimmedEmail) {
+            toast.error("Please enter your email.");
+            return;
+        }
 
         if (state === "register" && trimmedName.length < 2) {
             toast.error("Please enter your full name.");
@@ -78,36 +82,53 @@ const Login = () => {
         }
 
         if (formData.password.length < 8) {
-            toast.error("Password must be at least 8 characters.");
+            toast.error(
+                "Password must be at least 8 characters."
+            );
             return;
         }
 
         try {
             setIsSubmitting(true);
 
-            const payload =
-                state === "register"
-                    ? {
+            if (state === "register") {
+                const { data } = await axios.post(
+                    `${BASE_URL}/api/users/register`,
+                    {
                         name: trimmedName,
                         email: trimmedEmail,
                         password: formData.password,
                     }
-                    : {
-                        email: trimmedEmail,
-                        password: formData.password,
-                    };
+                );
+
+                toast.success(
+                    data.message || "OTP sent to your email"
+                );
+
+                navigate("/verify-otp", {
+                    replace: true,
+                    state: {
+                        email: data.email || trimmedEmail,
+                    },
+                });
+
+                return;
+            }
 
             const { data } = await axios.post(
-                `${BASE_URL}/api/users/${state}`,
-                payload
+                `${BASE_URL}/api/users/login`,
+                {
+                    email: trimmedEmail,
+                    password: formData.password,
+                }
             );
 
-            try {
-                localStorage.setItem("token", data.token);
-            } catch (storageError) {
-                // localStorage can throw in private/incognito mode or when full
-                console.error("Failed to persist token:", storageError);
-            }
+            localStorage.setItem("token", data.token);
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(data.user)
+            );
 
             dispatch(
                 login({
@@ -116,14 +137,35 @@ const Login = () => {
                 })
             );
 
-            toast.success(data.message);
+            toast.success(
+                data.message || "Login successful"
+            );
 
             navigate("/app", {
                 replace: true,
             });
         } catch (error) {
+            const responseData = error?.response?.data;
+
+            if (responseData?.requiresVerification) {
+                toast.error(
+                    responseData.message ||
+                    "Please verify your email"
+                );
+
+                navigate("/verify-otp", {
+                    state: {
+                        email:
+                            responseData.email ||
+                            trimmedEmail,
+                    },
+                });
+
+                return;
+            }
+
             const message =
-                error?.response?.data?.message ||
+                responseData?.message ||
                 (error?.request
                     ? "Unable to reach the server. Please check your connection."
                     : error.message) ||
@@ -136,9 +178,14 @@ const Login = () => {
     };
 
     const handleStateChange = () => {
-        const nextState = state === "login" ? "register" : "login";
+        const nextState =
+            state === "login"
+                ? "register"
+                : "login";
 
-        setSearchParams({ state: nextState });
+        setSearchParams({
+            state: nextState,
+        });
 
         setFormData((prev) => ({
             name: "",
@@ -157,7 +204,6 @@ const Login = () => {
                 <Link
                     to="/"
                     className="mx-auto mb-5 flex w-fit items-center gap-2"
-                    aria-label="Go to homepage"
                 >
                     <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500 shadow-lg shadow-green-500/25 sm:h-14 sm:w-14">
                         <FileText className="h-6 w-6 text-white sm:h-7 sm:w-7" />
@@ -166,7 +212,9 @@ const Login = () => {
                 </Link>
 
                 <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-                    {state === "login" ? "Welcome back" : "Create account"}
+                    {state === "login"
+                        ? "Welcome back"
+                        : "Create account"}
                 </h1>
 
                 <p className="mt-2 text-sm text-slate-500">
@@ -178,12 +226,9 @@ const Login = () => {
                 <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
                     {state === "register" && (
                         <div className="flex h-12 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-5 transition focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
-                            <User className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                            <label htmlFor="name" className="sr-only">
-                                Full name
-                            </label>
+                            <User className="h-4 w-4 text-slate-400" />
+
                             <input
-                                id="name"
                                 type="text"
                                 name="name"
                                 placeholder="Full name"
@@ -194,18 +239,15 @@ const Login = () => {
                                 autoComplete="name"
                                 required
                                 disabled={isSubmitting}
-                                className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
+                                className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
                             />
                         </div>
                     )}
 
                     <div className="flex h-12 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-5 transition focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
-                        <Mail className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                        <label htmlFor="email" className="sr-only">
-                            Email address
-                        </label>
+                        <Mail className="h-4 w-4 text-slate-400" />
+
                         <input
-                            id="email"
                             type="email"
                             name="email"
                             placeholder="Email address"
@@ -214,17 +256,14 @@ const Login = () => {
                             autoComplete="email"
                             required
                             disabled={isSubmitting}
-                            className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
+                            className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
                         />
                     </div>
 
                     <div className="flex h-12 items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-5 transition focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
-                        <Lock className="h-4 w-4 text-slate-400" aria-hidden="true" />
-                        <label htmlFor="password" className="sr-only">
-                            Password
-                        </label>
+                        <Lock className="h-4 w-4 text-slate-400" />
+
                         <input
-                            id="password"
                             type="password"
                             name="password"
                             placeholder="Password"
@@ -232,11 +271,13 @@ const Login = () => {
                             onChange={handleChange}
                             minLength={8}
                             autoComplete={
-                                state === "login" ? "current-password" : "new-password"
+                                state === "login"
+                                    ? "current-password"
+                                    : "new-password"
                             }
                             required
                             disabled={isSubmitting}
-                            className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
+                            className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
                         />
                     </div>
                 </div>
@@ -245,8 +286,9 @@ const Login = () => {
                     <div className="mt-4 text-left">
                         <button
                             type="button"
+                            onClick={() => navigate("/forgot-password")}
                             disabled={isSubmitting}
-                            className="text-sm text-green-600 transition hover:text-green-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                            className="text-sm text-green-600 transition hover:text-green-700 hover:underline disabled:opacity-60"
                         >
                             Forgot password?
                         </button>
@@ -259,13 +301,13 @@ const Login = () => {
                     className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-green-500 text-sm font-semibold text-white shadow-lg shadow-green-500/25 transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {isSubmitting && (
-                        <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
                     )}
 
                     {isSubmitting
                         ? state === "login"
                             ? "Logging in..."
-                            : "Creating account..."
+                            : "Sending OTP..."
                         : state === "login"
                             ? "Login"
                             : "Sign up"}
@@ -280,9 +322,11 @@ const Login = () => {
                         type="button"
                         onClick={handleStateChange}
                         disabled={isSubmitting}
-                        className="ml-1 font-medium text-green-600 transition hover:text-green-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                        className="ml-1 font-medium text-green-600 transition hover:text-green-700 hover:underline"
                     >
-                        {state === "login" ? "Sign up" : "Login"}
+                        {state === "login"
+                            ? "Sign up"
+                            : "Login"}
                     </button>
                 </p>
             </form>

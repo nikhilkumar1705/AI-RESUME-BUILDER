@@ -112,7 +112,7 @@ const ResumeBuilder = () => {
         `/api/resumes/get/${resumeId}`,
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

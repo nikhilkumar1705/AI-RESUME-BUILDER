@@ -9,9 +9,11 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerateSummary = async () => {
-    const profession = resumeData.personal_info?.profession;
-    const skills = resumeData.skills || [];
-    const experience = resumeData.experience || [];
+    const profession = resumeData.personal_info?.profession?.trim() || "";
+    const skills = Array.isArray(resumeData.skills) ? resumeData.skills : [];
+    const experience = Array.isArray(resumeData.experience)
+      ? resumeData.experience
+      : [];
 
     if (!profession && !skills.length && !experience.length) {
       return toast.error(
@@ -22,19 +24,27 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
     try {
       setIsGenerating(true);
 
+      const payload = {
+        personal_info: resumeData.personal_info || {},
+        skills,
+        experience,
+      };
+
+      console.log("SUMMARY PAYLOAD:", payload);
+
       const { data } = await api.post(
         "/api/ai/generate-summary",
-        {
-          personal_info: resumeData.personal_info,
-          skills: resumeData.skills,
-          experience: resumeData.experience,
-        },
+        payload,
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+
+      if (!data?.summary) {
+        return toast.error("Summary not received from server");
+      }
 
       setResumeData((prev) => ({
         ...prev,
@@ -43,8 +53,14 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
 
       toast.success("Summary generated");
     } catch (error) {
+      console.log(
+        "GENERATE SUMMARY ERROR:",
+        error?.response?.data || error
+      );
+
       toast.error(
-        error?.response?.data?.message || error.message
+        error?.response?.data?.message ||
+          "Unable to generate summary"
       );
     } finally {
       setIsGenerating(false);

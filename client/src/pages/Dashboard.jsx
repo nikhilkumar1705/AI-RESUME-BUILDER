@@ -54,7 +54,7 @@ const Dashboard = () => {
     try {
       const { data } = await api.get("/api/users/resumes", {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -127,7 +127,7 @@ const Dashboard = () => {
         },
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -167,7 +167,7 @@ const Dashboard = () => {
         },
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -204,7 +204,7 @@ const Dashboard = () => {
         },
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -240,7 +240,7 @@ const Dashboard = () => {
         `/api/resumes/delete/${resumeId}`,
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
