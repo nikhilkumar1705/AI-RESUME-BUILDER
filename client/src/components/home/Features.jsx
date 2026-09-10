@@ -5,108 +5,126 @@ import {
   Download,
   LayoutTemplate,
   Wand2,
+  ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const features = [
   {
-    title: "AI Resume Writing",
+    title: "AI writing support",
     description:
-      "Generate professional summaries, skills, and job descriptions with AI.",
+      "Improve summaries and experience descriptions when you need help with wording.",
     icon: Sparkles,
   },
   {
-    title: "ATS-Friendly Templates",
+    title: "ATS-friendly layouts",
     description:
-      "Use clean resume templates designed to pass applicant tracking systems.",
+      "Use clean resume structures that keep content readable for recruiters and tracking systems.",
     icon: LayoutTemplate,
   },
   {
-    title: "Smart Content Suggestions",
+    title: "Content improvements",
     description:
-      "Improve weak resume points with better wording and stronger keywords.",
+      "Turn basic resume points into clearer, more professional statements.",
     icon: Wand2,
   },
   {
-    title: "Easy Resume Editing",
+    title: "Simple editing",
     description:
-      "Edit sections, add experience, update skills, and preview instantly.",
+      "Update each section independently and see changes reflected in your resume preview.",
     icon: FileText,
   },
   {
-    title: "One-Click Download",
+    title: "PDF export",
     description:
-      "Download your final resume as a professional PDF in just one click.",
+      "Export your completed resume as a clean PDF when you're ready to apply.",
     icon: Download,
   },
   {
-    title: "Private & Secure",
+    title: "Secure account",
     description:
-      "Your personal details and resume data stay safe and protected.",
+      "Email verification and authenticated access help protect your account and resume data.",
     icon: ShieldCheck,
   },
 ];
 
 const Features = () => {
   return (
-    <section id="features" className="bg-white px-5 py-20">
+    <section
+      id="features"
+      className="border-t border-slate-200 bg-white"
+    >
+      <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+        <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+          <div>
+            <p className="text-sm font-semibold text-emerald-600">
+              Features
+            </p>
 
-      <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="rounded-full bg-green-50 px-4 py-1.5 text-sm font-medium text-green-700">
+            <h2 className="mt-3 max-w-lg text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              Everything you need to build and manage your resume.
+            </h2>
 
-            Features
-          </span>
+            <p className="mt-5 max-w-md text-base leading-7 text-slate-600">
+              Keep the workflow simple: add your information, improve the
+              parts that need work, preview the result, and export when
+              you're done.
+            </p>
 
-          <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 md:text-5xl">
-            Everything you need to build a better resume
-          </h2>
-
-          <p className="mt-4 text-sm leading-7 text-slate-600 md:text-base">
-            Create a clean, professional, and job-ready resume faster with AI-powered tools.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-
-            return (
-              <div
-                key={index}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-green-200 hover:shadow-xl hover:shadow-green-100"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-600 transition group-hover:bg-green-500 group-hover:text-white">
-                  <Icon className="h-6 w-6" />
-                </div>
-
-                <h3 className="mt-5 text-lg font-semibold text-slate-900">
-                  {feature.title}
-                </h3>
-
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {feature.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-14 rounded-3xl border border-green-100 bg-green-50 p-8 text-center md:p-10">
-          <h3 className="text-2xl font-bold text-slate-900 md:text-3xl">
-            Ready to create your resume?
-          </h3>
-
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
-            Start with a template, add your details, and let AI help you make it more professional.
-          </p>
-
-          <div className="mt-7">
             <Link
-              to="/app?state=register"
-              className="inline-flex rounded-full bg-green-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/25 transition hover:bg-green-600"
+              to="/login?state=register"
+              className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-emerald-600"
             >
-              Create my resume
+              Start building
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid border-l border-t border-slate-200 sm:grid-cols-2">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+
+              return (
+                <div
+                  key={feature.title}
+                  className="border-b border-r border-slate-200 p-6 sm:p-7"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <Icon className="h-5 w-5" />
+                  </div>
+
+                  <h3 className="mt-5 text-base font-semibold text-slate-950">
+                    {feature.title}
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-20 border-t border-slate-200 pt-12">
+          <div className="flex flex-col justify-between gap-7 md:flex-row md:items-center">
+            <div>
+              <h3 className="text-2xl font-semibold tracking-tight text-slate-950">
+                Ready to build your next resume?
+              </h3>
+
+              <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
+                Create an account, choose a template and start editing your
+                resume in one place.
+              </p>
+            </div>
+
+            <Link
+              to="/login?state=register"
+              className="inline-flex w-fit items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              Create resume
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

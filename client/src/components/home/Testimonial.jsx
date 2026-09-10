@@ -1,83 +1,96 @@
-import { Star } from "lucide-react";
+import {
+  UserPlus,
+  FileEdit,
+  Sparkles,
+  Download,
+} from "lucide-react";
 
-const testimonials = [
-    {
-        name: "Aarav Sharma",
-        role: "Software Developer",
-        message:
-            "Resume helped me create a clean and professional resume in minutes. The AI suggestions made my content much better.",
-    },
-    {
-        name: "Priya Mehta",
-        role: "Marketing Executive",
-        message:
-            "The templates are simple and modern. I was able to build an ATS-friendly resume without any confusion.",
-    },
-    {
-        name: "Rohan Verma",
-        role: "Data Analyst",
-        message:
-            "Very easy to use. I liked the instant preview and one-click download feature. Perfect for job applications.",
-    },
+const steps = [
+  {
+    number: "01",
+    title: "Create your account",
+    description:
+      "Sign up and verify your email to securely access your resume workspace.",
+    icon: UserPlus,
+  },
+  {
+    number: "02",
+    title: "Add your details",
+    description:
+      "Enter your personal information, experience, education, skills, and projects.",
+    icon: FileEdit,
+  },
+  {
+    number: "03",
+    title: "Improve with AI",
+    description:
+      "Use AI only where needed to improve summaries and job descriptions.",
+    icon: Sparkles,
+  },
+  {
+    number: "04",
+    title: "Export your resume",
+    description:
+      "Preview your final resume and download it as a clean PDF.",
+    icon: Download,
+  },
 ];
 
-const Testimonials = () => {
-    return (
-        <section id="testimonials" className="bg-slate-50 px-5 py-20">
-            <div className="mx-auto max-w-6xl">
-                <div className="mx-auto max-w-2xl text-center">
-                    <span className="rounded-full bg-green-50 px-4 py-1.5 text-sm font-medium text-green-700">
-                        Testimonials
-                    </span>
+const HowItWorks = () => {
+  return (
+    <section
+      id="how-it-works"
+      className="border-t border-slate-200 bg-slate-50"
+    >
+      <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold text-emerald-600">
+            How it works
+          </p>
 
-                    <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 md:text-5xl">
-                        What users say about Resume
-                    </h2>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+            From blank page to finished resume.
+          </h2>
 
-                    <p className="mt-4 text-sm leading-7 text-slate-600 md:text-base">
-                        Job seekers use Resume to create professional, ATS-friendly resumes faster with AI.
-                    </p>
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            A simple workflow designed to keep resume building fast and
+            straightforward.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 md:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step) => {
+            const Icon = step.icon;
+
+            return (
+              <div
+                key={step.number}
+                className="bg-white p-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <Icon className="h-5 w-5" />
+                  </div>
+
+                  <span className="text-sm font-medium text-slate-300">
+                    {step.number}
+                  </span>
                 </div>
 
-                <div className="mt-12 grid gap-6 md:grid-cols-3">
-                    {testimonials.map((testimonial, index) => (
-                        <div
-                            key={index}
-                            className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-green-200 hover:shadow-xl hover:shadow-green-100"
-                        >
-                            <div className="flex gap-1">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        className="h-4 w-4 fill-green-500 text-green-500"
-                                    />
-                                ))}
-                            </div>
+                <h3 className="mt-6 text-base font-semibold text-slate-950">
+                  {step.title}
+                </h3>
 
-                            <p className="mt-6 text-sm leading-7 text-slate-600">
-                                “{testimonial.message}”
-                            </p>
-
-                            <div className="mt-6 flex items-center gap-3 border-t border-slate-100 pt-5">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-green-100 text-sm font-bold text-green-700">
-                                    {testimonial.name.charAt(0)}
-                                </div>
-
-                                <div>
-                                    <h3 className="font-semibold text-slate-900">
-                                        {testimonial.name}
-                                    </h3>
-                                    <p className="text-sm text-slate-500">
-                                        {testimonial.role}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {step.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
 };
 
-export default Testimonials;
+export default HowItWorks;
